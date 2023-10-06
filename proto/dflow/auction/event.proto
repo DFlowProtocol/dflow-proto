@@ -1,0 +1,79 @@
+syntax = "proto3";
+package dflow.auction;
+
+// this line is used by starport scaffolding # proto/tx/import
+
+option go_package = "dflow/x/auction/types";
+
+message AuctionCreatedEvent {
+    // The type of event
+    string type = 1;
+    // The auction ID
+    uint64 auctionId = 2;
+}
+
+// Auction epoch was incremented due to complete delivery
+message AuctionEpochCompletedEvent {
+    // The type of event
+    string type = 1;
+    // The auction ID
+    uint64 auctionId = 2;
+    // The new epoch of the auction
+    uint64 newEpoch = 3;
+    // The Unix time in milliseconds at which this auction will roll over
+    int64 expiryTimestamp = 4;
+    // The size of the winning bid in the new epoch
+    uint64 winningBid = 5;
+    // The market maker in the new epoch
+    string newMarketMaker = 6;
+    // Amount of additional payment to the order flow source
+    uint64 ofsAdditionalPayment = 7;
+}
+
+// Auction epoch was incremented due to expiry
+message AuctionEpochExpiredEvent {
+    // The type of event
+    string type = 1;
+    // The auction ID
+    uint64 auctionId = 2;
+    // The new epoch of the auction
+    uint64 newEpoch = 3;
+    // The Unix time in milliseconds at which this auction will roll over
+    int64 expiryTimestamp = 4;
+    // The size of the winning bid in the new epoch
+    uint64 winningBid = 5;
+    // The market maker in the new epoch
+    string newMarketMaker = 6;
+    // Amount of additional payment to the order flow source
+    uint64 ofsAdditionalPayment = 7;
+    // Amount refunded to the market maker in the old epoch
+    uint64 mmRefund = 8;
+}
+
+message AuctionDeletedEvent {
+    // The type of event
+    string type = 1;
+    // The auction ID
+    uint64 auctionId = 2;
+    // The epoch at which the auction was deleted
+    uint64 epoch = 3;
+    // Amount of additional payment to the order flow source
+    uint64 ofsAdditionalPayment = 4;
+    // Amount refunded to the winning market maker
+    uint64 winnerRefund = 5;
+    // Amount refunded to the leading market maker for the next epoch
+    uint64 leaderRefund = 6;
+}
+
+message DeliverNotionalPaymentEvent {
+    // The type of event
+    string type = 1;
+    // The auction ID
+    uint64 auctionId = 2;
+    // The epoch in which payment is being made
+    uint64 epoch = 3;
+    // True iff delivery is for payment in lieu
+    bool isForPaymentInLieu = 4;
+    // Payment made to the order flow source
+    uint64 ofsPayment = 5;
+}

@@ -1,0 +1,9 @@
+syntax = "proto3";
+package dflow.bridge;
+
+option go_package = "dflow/x/bridge/types";
+
+message PendingWithdrawal {
+  uint64 withdrawId = 1;
+}
+

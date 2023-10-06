@@ -1,0 +1,78 @@
+syntax = "proto3";
+package dflow.bridge;
+
+import "bridge/nonced_proposed_transfers.proto";
+// this line is used by starport scaffolding # proto/tx/import
+
+option go_package = "dflow/x/bridge/types";
+
+// Msg defines the Msg service.
+service Msg {
+  rpc AttestTransfer(MsgAttestTransfer) returns (MsgAttestTransferResponse);
+  rpc RequestWithdraw(MsgRequestWithdraw) returns (MsgRequestWithdrawResponse);
+  rpc SignWithdrawal(MsgSignWithdrawal) returns (MsgSignWithdrawalResponse);
+  rpc ReviseWithdrawal(MsgReviseWithdrawal) returns (MsgReviseWithdrawalResponse);
+// this line is used by starport scaffolding # proto/tx/rpc
+}
+
+message MsgAttestTransfer {
+  // The bech32 public key of the signatory server's signing key
+  string signerPublicKey = 1;
+  // The bech32 public key of the signatory server
+  string ssPublicKey = 2;
+  // The transfer being attested by the signatory server
+  Transfer transfer = 3;
+}
+
+message MsgAttestTransferResponse {
+  // The latest committed nonce on the DFlow network after attesting the transfer
+  uint64 currentCommittedNonce = 1;
+}
+
+message MsgRequestWithdraw {
+  // The bech32 public key associated with the withdrawer of funds
+  string withdrawerPublicKey = 1;
+  // The Base58-encoded SPL token account receiving the funds
+  string dst = 2;
+  // The Base58-encoded Solana wallet that owns the dst account
+  string dstOwner = 3;
+  // The amount of tokens being withdrawn from the DFlow network
+  uint64 amount = 4;
+}
+
+message MsgRequestWithdrawResponse {
+  // The generated withdraw ID
+  uint64 withdrawId = 1;
+}
+
+message MsgSignWithdrawal {
+  // The bech32 encoded DFlow public key of the signatory server's signing key
+  string signerPublicKey = 1;
+  // The bech32 encoded DFlow public key of the signatory server
+  string ssPublicKey = 2;
+  // The withdraw ID that the signatory server is attesting to
+  uint64 withdrawId = 3;
+  // A base58 encoded signature from the Solana private key of the signatory server
+  string signature = 4;
+  // The base58 encoded Solana public key of the signatory server
+  string ssEd25519PublicKey = 5;
+}
+
+message MsgSignWithdrawalResponse {
+}
+
+message MsgReviseWithdrawal {
+  // The bech32 public key associated with the withdrawer of funds
+  string withdrawerPublicKey = 1;
+  // The ID of the withdrawal that will be revised
+  uint64 withdrawId = 2;
+  // The Base58-encoded SPL token account receiving the funds
+  string dst = 3;
+  // The Base58-encoded Solana wallet that owns the dst account
+  string dstOwner = 4;
+}
+
+message MsgReviseWithdrawalResponse {
+}
+
+// this line is used by starport scaffolding # proto/tx/message

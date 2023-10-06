@@ -1,0 +1,58 @@
+syntax = "proto3";
+package dflow.ssaccount;
+
+// this line is used by starport scaffolding # proto/tx/import
+
+option go_package = "dflow/x/ssaccount/types";
+
+// Msg defines the Msg service.
+service Msg {
+  rpc InitSsaccount(MsgInitSsaccount) returns (MsgInitSsaccountResponse);
+  rpc CreateNetworkAccount(MsgCreateNetworkAccount) returns (MsgCreateNetworkAccountResponse);
+  rpc SetSigningKeys(MsgSetSigningKeys) returns (MsgSetSigningKeysResponse);
+// this line is used by starport scaffolding # proto/tx/rpc
+}
+
+message MsgInitSsaccount {
+  // The bech32 DFlow public key of the validator. This is the signer.
+  string validatorPublicKey = 1;
+  // The bech32 DFlow public key of the signatory server. Not a signer.
+  string ssPublicKey = 2;
+  // The bech32 DFlow public key of the signatory server's first signing key. Not a signer.
+  string signingPublicKey1 = 3;
+  // The bech32 DFlow public key of the signatory server's second signing key. Not a signer.
+  string signingPublicKey2 = 4;
+}
+
+message MsgInitSsaccountResponse {
+}
+
+message MsgCreateNetworkAccount {
+  // The bech32 DFlow public key of the transaction signer. This must be the signatory server's
+  // account key or one of its signing keys.
+  string signerPublicKey = 1;
+  // The bech32 DFlow public key of the signatory server
+  string ssPublicKey = 2;
+  // The bech32 DFlow public key of the new network account
+  string newNetworkAccount = 3;
+}
+
+message MsgCreateNetworkAccountResponse {
+}
+
+message MsgSetSigningKeys {
+  // The bech32 DFlow public key of the transaction signer. This must be the signatory server's
+  // account key or one of its current signing keys.
+  string signerPublicKey = 1;
+  // The bech32 DFlow public key of the signatory server
+  string ssPublicKey = 2;
+  // The bech32 DFlow public key of the signatory server's first signing key
+  string signingPublicKey1 = 3;
+  // The bech32 DFlow public key of the signatory server's second signing key
+  string signingPublicKey2 = 4;
+}
+
+message MsgSetSigningKeysResponse {
+}
+
+// this line is used by starport scaffolding # proto/tx/message

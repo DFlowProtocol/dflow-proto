@@ -1,0 +1,9 @@
+syntax = "proto3";
+package dflow.auction;
+
+option go_package = "dflow/x/auction/types";
+
+message GlobalAuctionState {
+  uint64 nextAuctionId = 1;
+
+}

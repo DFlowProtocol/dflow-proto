@@ -1,0 +1,162 @@
+syntax = "proto3";
+package dflow.auction;
+
+// this line is used by starport scaffolding # proto/tx/import
+
+option go_package = "dflow/x/auction/types";
+
+// Msg defines the Msg service.
+service Msg {
+  rpc CreateAuction(MsgCreateAuction) returns (MsgCreateAuctionResponse);
+  // Submits a blind bid. A bid can be revised after it is submitted by sending a ReviseBlindBid
+  // message. A market maker can submit blind bids for different auctions simultaneously but must
+  // send each blind bid message in a single-message transaction if doing so.
+  rpc BlindBid(MsgBlindBid) returns (MsgBlindBidResponse);
+  // Revises the sender's blind bid. A bid cannot be revised after it is revealed.
+  rpc ReviseBlindBid(MsgReviseBlindBid) returns (MsgReviseBlindBidResponse);
+  // Reveals a blind bid. A market maker can reveal bids for multiple different auctions
+  // simultaneously but must send each reveal bid message in a single-message transaction if doing
+  // so.
+  rpc RevealBid(MsgRevealBid) returns (MsgRevealBidResponse);
+  rpc DeliverNotional(MsgDeliverNotional) returns (MsgDeliverNotionalResponse);
+  rpc UpdateAuction(MsgUpdateAuction) returns (MsgUpdateAuctionResponse);
+  rpc DeleteAuction(MsgDeleteAuction) returns (MsgDeleteAuctionResponse);
+// this line is used by starport scaffolding # proto/tx/rpc
+}
+
+message MsgCreateAuction {
+  // The bech32 public key of the order flow source
+  string ofsPublicKey = 1;
+  // The order flow source's identifier for the auction
+  string clientAuctionId = 2;
+  // The base currency in the token pair. For unidirectional auctions, this is the currency that
+  // retail sends.
+  string baseCurrency = 3;
+  // The quote currency in the token pair. For unidirectional auctions, this is the currency that
+  // retail receives.
+  string quoteCurrency = 4;
+  // The minimum notional size of the order in USD. Scaled integer with two decimals.
+  uint64 minimumOrderSize = 5;
+  // The maximum notional size of the order in USD. Scaled integer with two decimals.
+  uint64 maximumOrderSize = 6;
+  // The total notional size being delivered by the auction in USD. Scaled integer with two decimals.
+  uint64 notionalSize = 7;
+  // The max delivery period in milliseconds
+  int64 maxDeliveryPeriod = 8;
+  // The fee payer mode for settlement transactions
+  uint32 feePayerMode = 9;
+  // A boolean indicating whether the payment in lieu is enabled for the auction
+  bool isPaymentInLieuEnabled = 10;
+  // A boolean indicating whether the auction is unidirectional
+  bool isUnidirectional = 11;
+  string extensions = 12;
+  // An identifier for the network
+  string network = 13;
+}
+
+message MsgCreateAuctionResponse {
+  // The generated auction ID
+  uint64 auctionId = 1;
+}
+
+message MsgBlindBid {
+  // The bech32 DFlow public key of the market maker
+  string mmPublicKey = 1;
+  // The auction ID identifying the auction this blind bid belongs to
+  uint64 auctionId = 2;
+  // The SHA256 checksum of the bid and random nonce
+  string bidHash = 3;
+  // The auction epoch for which the blind bid is being submitted
+  uint64 bidEpoch = 4;
+}
+
+message MsgBlindBidResponse {
+}
+
+message MsgReviseBlindBid {
+  // The bech32 DFlow public key of the market maker
+  string mmPublicKey = 1;
+  // The auction ID identifying the auction this blind bid belongs to
+  uint64 auctionId = 2;
+  // The SHA256 checksum of the bid and random nonce
+  string bidHash = 3;
+  // The auction epoch for which the blind bid is being submitted
+  uint64 bidEpoch = 4;
+}
+
+message MsgReviseBlindBidResponse {
+}
+
+message MsgRevealBid {
+  // The bech32 DFlow public key of the market maker
+  string mmPublicKey = 1;
+  // The auction ID identifying the auction for which the blind bid is being revealed
+  uint64 auctionId = 2;
+  // The raw value of the bid
+  uint64 bid = 3;
+  // The random nonce used to generate the hash of the blind bid
+  uint64 nonce = 4;
+  // The URL of the market maker's quoting endpoint
+  string mmUrl = 5;
+  // The auction epoch for which the blind bid was submitted
+  uint64 bidEpoch = 6;
+}
+
+message MsgRevealBidResponse {
+}
+
+message MsgDeliverNotional {
+  // The bech32 DFlow public key of the signatory server's signing key
+  string signerPublicKey = 1;
+  // The bech32 DFlow public key of the signatory server
+  string ssPublicKey = 2;
+  // The auction ID for which the notional clock is being updated
+  uint64 auctionId = 3;
+  // The notional amount being delivered to an auction
+  uint64 notional = 4;
+  // The auction epoch to which delivery is being made
+  uint64 auctionEpoch = 5;
+  Endorsement endorsement = 6;
+  // True if and only if this delivery is being made for payment in lieu
+  bool isForPaymentInLieu = 7;
+  // Additional data used for indexing
+  string extensions = 8;
+}
+
+message Endorsement {
+  // Base58-encoded Ed25519 public key used to sign the endorsement message
+  string endorser = 1;
+  // Base64-encoded Ed25519 signature of `"{id},{expirationTime},{data}"`
+  string signature = 2;
+  // Base64-encoded uint64 endorsement ID
+  string id = 3;
+  // Expiration time as UTC. Number of seconds since Jan 1, 1970 00:00:00 UTC.
+  int64 expirationTimeUTC = 4;
+  // Data used in the endorsement message
+  string data = 5;
+}
+
+message MsgDeliverNotionalResponse {
+}
+
+message MsgUpdateAuction {
+  // The bech32 public key of the order flow source
+  string ofsPublicKey = 1;
+  // The auction ID for which the auction parameters are being updated
+  uint64 auctionId = 2;
+  // The new client auction ID
+  string clientAuctionId = 3;
+}
+
+message MsgUpdateAuctionResponse {
+}
+
+message MsgDeleteAuction {
+  string ofsPublicKey = 1;
+  uint64 auctionId = 2;
+}
+
+message MsgDeleteAuctionResponse {
+}
+
+// this line is used by starport scaffolding # proto/tx/message

@@ -1,0 +1,12 @@
+syntax = "proto3";
+package dflow.ofsaccount;
+
+option go_package = "dflow/x/ofsaccount/types";
+
+message OrderFlowSource {
+  string publicKey = 1;
+  string flowEndorsementKey1 = 2;
+  string flowEndorsementKey2 = 3;
+  string extensions = 4;
+  repeated uint64 auctions = 5;
+}

@@ -1,0 +1,16 @@
+syntax = "proto3";
+package dflow.ssaccount;
+
+option go_package = "dflow/x/ssaccount/types";
+
+message SignatoryServer {
+  // The bech32 DFlow public key of the signatory server
+  string ssPublicKey = 1;
+  // The bech32 DFlow public key of the signatory server's first signing key
+  string signingPublicKey1 = 2;
+  // The bech32 DFlow public key of the signatory server's second signing key
+  string signingPublicKey2 = 3;
+  // The bech32 DFlow public key of the SS-associated validator
+  string validatorPublicKey = 4;
+}
+

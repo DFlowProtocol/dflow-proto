@@ -1,0 +1,59 @@
+syntax = "proto3";
+package dflow.ofsaccount;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "ofsaccount/params.proto";
+import "ofsaccount/order_flow_source.proto";
+// this line is used by starport scaffolding # 1
+
+option go_package = "dflow/x/ofsaccount/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  // Parameters queries the parameters of the module.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/dflow/ofsaccount/params";
+  }
+  // Queries a OrderFlowSource by index.
+	rpc OrderFlowSource(QueryGetOrderFlowSourceRequest) returns (QueryGetOrderFlowSourceResponse) {
+		option (google.api.http).get = "/dflow/ofsaccount/order_flow_source/{publicKey}";
+	}
+
+	// Queries a list of OrderFlowSource items.
+	rpc OrderFlowSourceAll(QueryAllOrderFlowSourceRequest) returns (QueryAllOrderFlowSourceResponse) {
+		option (google.api.http).get = "/dflow/ofsaccount/order_flow_source";
+	}
+
+// this line is used by starport scaffolding # 2
+}
+
+// QueryParamsRequest is request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params holds all the parameters of this module.
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryGetOrderFlowSourceRequest {
+	  string publicKey = 1;
+
+}
+
+message QueryGetOrderFlowSourceResponse {
+	OrderFlowSource orderFlowSource = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllOrderFlowSourceRequest {
+	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllOrderFlowSourceResponse {
+	repeated OrderFlowSource orderFlowSource = 1 [(gogoproto.nullable) = false];
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// this line is used by starport scaffolding # 3

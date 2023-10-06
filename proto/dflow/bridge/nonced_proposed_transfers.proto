@@ -1,0 +1,37 @@
+syntax = "proto3";
+package dflow.bridge;
+
+option go_package = "dflow/x/bridge/types";
+
+enum TransferType {
+  DEPOSIT = 0;
+  WITHDRAWAL = 1;
+}
+
+message Transfer {
+  // An enum indicating whether this transfer is a deposit or withdrawal
+  TransferType transferType = 1;
+  // Either a bech32 encoded address if depositing or a Base58 encoded Solana public key if withdrawing
+  string dst = 2;
+  // Amount of tokens being transferred
+  uint64 amount = 3;
+  // The nonce of the transfer to be committed on DFlow
+  uint64 nonce = 4;
+  // A withdraw ID only used if this transfer is a withdrawal
+  uint64 withdrawId = 5;
+}
+
+message EndorsedTransfer {
+  // The bech32 public key of the validator associated with the endorsing signatory server
+  string validatorPublicKey = 1;
+  // The transfer being endorsed by the validator
+  Transfer transfer = 2;
+}
+
+message NoncedProposedTransfers {
+  // The nonce associated with the list of proposed transfers in this message
+  uint64 nonce = 1;
+  // A list of endorsed transfers at a given nonce
+  repeated EndorsedTransfer proposed = 2;
+}
+

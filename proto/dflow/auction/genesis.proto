@@ -1,0 +1,22 @@
+syntax = "proto3";
+package dflow.auction;
+
+import "gogoproto/gogo.proto";
+import "auction/params.proto";
+import "auction/global_auction_state.proto";
+import "auction/order_flow_auction.proto";
+import "auction/encoded_expiring_auctions.proto";
+import "auction/endorsements.proto";
+// this line is used by starport scaffolding # genesis/proto/import
+
+option go_package = "dflow/x/auction/types";
+
+// GenesisState defines the auction module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+  GlobalAuctionState globalAuctionState = 2;
+  repeated OrderFlowAuction orderFlowAuctionList = 3 [(gogoproto.nullable) = false];
+  EncodedExpiringAuctions encodedExpiringAuctions = 4;
+  repeated Endorsements endorsementsList = 5 [(gogoproto.nullable) = false];
+  // this line is used by starport scaffolding # genesis/proto/state
+}

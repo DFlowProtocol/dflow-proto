@@ -1,0 +1,16 @@
+syntax = "proto3";
+package dflow.auction;
+
+option go_package = "dflow/x/auction/types";
+
+message EndorsementInfo {
+  uint64 id = 1;
+  int64 expirationTimeUTC = 2;
+}
+
+message Endorsements {
+  string ofsPublicKey = 1;
+  repeated EndorsementInfo endorsements = 2;
+
+}
+

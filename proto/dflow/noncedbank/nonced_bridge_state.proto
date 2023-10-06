@@ -1,0 +1,13 @@
+syntax = "proto3";
+package dflow.noncedbank;
+
+option go_package = "dflow/x/noncedbank/types";
+
+message NoncedBridgeState {
+  // The next nonce expected by the network,
+  // nextNonce - 1 represents the currently committed nonce
+  uint64 nextNonce = 1;
+  // The next withdraw ID to be generated
+  // withdraw ID - 1 represents the most recent withdrawal
+  uint64 withdrawId = 2;
+}

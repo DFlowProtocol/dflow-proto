@@ -1,0 +1,20 @@
+syntax = "proto3";
+package dflow.bridge;
+
+import "gogoproto/gogo.proto";
+import "bridge/params.proto";
+import "bridge/nonced_proposed_transfers.proto";
+import "bridge/withdraw_tx_map.proto";
+import "bridge/pending_withdrawal.proto";
+// this line is used by starport scaffolding # genesis/proto/import
+
+option go_package = "dflow/x/bridge/types";
+
+// GenesisState defines the bridge module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+  repeated NoncedProposedTransfers noncedProposedTransfersList = 2 [(gogoproto.nullable) = false];
+  repeated WithdrawTxMap withdrawTxMapList = 3 [(gogoproto.nullable) = false];
+  repeated PendingWithdrawal pendingWithdrawalList = 4 [(gogoproto.nullable) = false];
+  // this line is used by starport scaffolding # genesis/proto/state
+}

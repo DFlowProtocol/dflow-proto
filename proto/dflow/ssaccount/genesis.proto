@@ -1,0 +1,16 @@
+syntax = "proto3";
+package dflow.ssaccount;
+
+import "gogoproto/gogo.proto";
+import "ssaccount/params.proto";
+import "ssaccount/signatory_server.proto";
+// this line is used by starport scaffolding # genesis/proto/import
+
+option go_package = "dflow/x/ssaccount/types";
+
+// GenesisState defines the ssaccount module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+  repeated SignatoryServer signatoryServerList = 2 [(gogoproto.nullable) = false];
+  // this line is used by starport scaffolding # genesis/proto/state
+}

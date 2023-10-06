@@ -1,0 +1,277 @@
+syntax = "proto3";
+package dflow.auction;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "auction/params.proto";
+import "auction/global_auction_state.proto";
+import "auction/order_flow_auction.proto";
+import "auction/encoded_expiring_auctions.proto";
+import "auction/endorsements.proto";
+// this line is used by starport scaffolding # 1
+
+option go_package = "dflow/x/auction/types";
+
+// Query defines the gRPC querier service.
+service Query {
+	// Parameters queries the parameters of the module.
+	rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+		option (google.api.http).get = "/dflow/auction/params";
+	}
+
+	// Queries a GlobalAuctionState by index.
+	rpc GlobalAuctionState(QueryGetGlobalAuctionStateRequest) returns (QueryGetGlobalAuctionStateResponse) {
+		option (google.api.http).get = "/dflow/auction/global_auction_state";
+	}
+
+	// Queries a OrderFlowAuction by index.
+	rpc OrderFlowAuction(QueryGetOrderFlowAuctionRequest) returns (QueryGetOrderFlowAuctionResponse) {
+		option (google.api.http).get = "/dflow/auction/order_flow_auction/{auctionId}";
+	}
+
+	// Queries a list of OrderFlowAuction items.
+	rpc OrderFlowAuctionAll(QueryAllOrderFlowAuctionRequest) returns (QueryAllOrderFlowAuctionResponse) {
+		option (google.api.http).get = "/dflow/auction/order_flow_auction";
+	}
+
+	// Queries a list of OrderFlowAuction items.
+	rpc OrderFlowAuctions(QueryOrderFlowAuctionsRequest) returns (QueryOrderFlowAuctionsResponse) {
+		option (google.api.http).get = "/dflow/auction/order_flow_auctions";
+	}
+
+	// Queries a list of auctions.
+	rpc Grid(QueryGridRequest) returns (QueryGridResponse) {
+		option (google.api.http).get = "/dflow/auction/grid";
+	}
+
+	// Query pricing info for the order flow source.
+	rpc PricingInfo(QueryPricingInfoRequest) returns (QueryPricingInfoResponse) {
+		option (google.api.http).get = "/dflow/auction/pricing_info";
+	}
+
+	// Checks a list of nonexistent auctions for overlap with each other and an order flow source's existing auctions.
+	rpc Overlap(QueryOverlapRequest) returns (QueryOverlapResponse) {
+		option (google.api.http).get = "/dflow/auction/overlap";
+	}
+
+	// Queries a EncodedExpiringAuctions by index.
+	rpc EncodedExpiringAuctions(QueryGetEncodedExpiringAuctionsRequest) returns (QueryGetEncodedExpiringAuctionsResponse) {
+		option (google.api.http).get = "/dflow/auction/encoded_expiring_auctions";
+	}
+
+	// Queries a Endorsements by index.
+	rpc Endorsements(QueryGetEndorsementsRequest) returns (QueryGetEndorsementsResponse) {
+		option (google.api.http).get = "/dflow/auction/endorsements/{ofsPublicKey}";
+	}
+
+	// Queries a list of Endorsements items.
+	rpc EndorsementsAll(QueryAllEndorsementsRequest) returns (QueryAllEndorsementsResponse) {
+		option (google.api.http).get = "/dflow/auction/endorsements";
+	}
+
+	// Queries a list of GridRows items.
+	rpc GridRows(QueryGridRowsRequest) returns (QueryGridRowsResponse) {
+		option (google.api.http).get = "/dflow/auction/grid_rows";
+	}
+
+// this line is used by starport scaffolding # 2
+}
+
+// QueryParamsRequest is request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params holds all the parameters of this module.
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryGetGlobalAuctionStateRequest {}
+
+message QueryGetGlobalAuctionStateResponse {
+	GlobalAuctionState GlobalAuctionState = 1 [(gogoproto.nullable) = false];
+}
+message QueryGetOrderFlowAuctionRequest {
+  uint64 auctionId = 1;
+
+}
+
+message QueryGetOrderFlowAuctionResponse {
+	OrderFlowAuction orderFlowAuction = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllOrderFlowAuctionRequest {
+	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllOrderFlowAuctionResponse {
+	repeated OrderFlowAuction orderFlowAuction = 1 [(gogoproto.nullable) = false];
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryOrderFlowAuctionsRequest {
+	string ofsPublicKey = 1;
+	// Specify an empty string to match any network
+	string network = 2;
+	// Specify an empty string to match any currency
+	string currency1 = 3;
+	// Specify an empty string to match any currency
+	string currency2 = 4;
+	// Scaled notional size of the order. Specify an empty string to match any notional size.
+	string orderSize = 5;
+}
+
+message QueryOrderFlowAuctionsResponse {
+	repeated OrderFlowAuction orderFlowAuctions = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryGridRequest {
+	// message Filter {
+	// 	message CurrencyPairFilter {
+	// 		// Auction is included if its currency pair matches. If only currency1 is specified,
+	// 		// then all auctions for currency1 are included.
+	// 		string currency1 = 1;
+	// 		string currency2 = 2;
+	// 	}
+	// 	message OrderSizeRangeFilter {
+	// 		// Auction is included if its order size range intersects with [min, max].
+	// 		// Scaled integer with two decimals.
+	// 		uint64 min = 1;
+	// 		// Auction is included if its order size range intersects with [min, max].
+	// 		// Scaled integer with two decimals.
+	// 		uint64 max = 2;
+	// 	}
+	// 	message NotionalSizeFilter {
+	// 		// Minimum notional size to include. Scaled integer with two decimals.
+	// 		uint64 min = 1;
+	// 		// Maximum notional size to include. Scaled integer with two decimals.
+	// 		uint64 max = 2;
+	// 	}
+	// 	message DeliveryPeriodFilter {
+	// 		// Minimum delivery period to include
+	// 		int64 min = 1;
+	// 		// Maximum delivery period to include
+	// 		int64 max = 2;
+	// 	}
+	// 	message FeePayerModeFilter {
+	// 		uint32 value = 1;
+	// 	}
+	// 	repeated uint64 auctionIds = 1;
+	// 	repeated string ofsPublicKeys = 2;
+	// 	repeated string networks = 3;
+	//  // TODO: Probably need to use a JSON string here
+	// 	repeated CurrencyPairFilter currencyPairs = 4;
+	//  // TODO: Probably need to use a JSON string here
+	// 	repeated OrderSizeRangeFilter orderSizeRangeFilters = 5;
+	//  // TODO: Probably need to use a JSON string here
+	// 	repeated NotionalSizeFilter notionalSizeFilters = 6;
+	//  // TODO: Probably need to use a JSON string here
+	// 	repeated DeliveryPeriodFilter deliveryPeriodFilters = 7;
+	// 	FeePayerModeFilter feePayerMode = 8;
+	// }
+
+	// message Sort {
+	// 	uint32 ofsPublicKey = 1;
+	// 	uint32 title = 2;
+	// 	uint32 network = 3;
+	// 	uint32 currencyPair = 4;
+	// 	uint32 orderSizeRange = 5;
+	// 	uint32 notionalSize = 6;
+	// 	uint32 epoch = 7;
+	// 	uint32 auctionStatus = 8;
+	// }
+
+	// message Paginate {
+	// 	uint32 start = 1;
+	// 	uint32 limit = 2;
+	// }
+
+	// Filter filter = 1;
+	// Sort sort = 2;
+	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryGridResponse {
+	repeated AuctionGridDataRow rows = 1 [(gogoproto.nullable) = false];
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryGridRowsRequest {
+	// Comma-separated auction IDs
+	string auctionIds = 1;
+}
+
+message QueryGridRowsResponse {
+	repeated AuctionGridDataRow rows = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryPricingInfoRequest {
+	string ofsPublicKey = 1;
+	string network = 2;
+	string currency1 = 3;
+	string currency2 = 4;
+}
+
+message QueryPricingInfoResponse {
+	message PricingInfo {
+		// Boolean indicating whether an auction exists for the currency pair
+		bool auctionExistsForPair = 1;
+		string flowEndorsementKey1 = 2;
+		string flowEndorsementKey2 = 3;
+		string ofsAccountExtensions = 4;
+		// TODO: Return pricing source for currency1
+		// TODO: Return pricing source for currency2
+	}
+	// Unspecified if the OFS account doesn't exist
+	PricingInfo pricingInfo = 1;
+}
+
+message QueryOverlapRequest {
+	string ofsPublicKey = 1;
+	// List of nonexistent auctions to check for overlap. Each auction is JSON of the form
+	// {
+	//   "network": string,
+	//   "currency1": string,
+	//   "currency2": string,
+	//   "minimumOrderSize": string,
+	//   "maximumOrderSize": string,
+	//   "isUnidirectional": bool (optional),
+	//   "feePayerMode": uint32 (optional),
+	// }
+	//
+	// For unidirectional auctions, currency1 is the currency that the retail trader sends and
+	// currency2 is the currency that the retail trader receives.
+	repeated string auctions = 2;
+}
+
+message QueryOverlapResponse {
+	message OverlapInfo {
+		bool hasOverlap = 1;
+	}
+	repeated OverlapInfo overlapInfos = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryGetEncodedExpiringAuctionsRequest {}
+
+message QueryGetEncodedExpiringAuctionsResponse {
+	EncodedExpiringAuctions EncodedExpiringAuctions = 1 [(gogoproto.nullable) = false];
+}
+message QueryGetEndorsementsRequest {
+	string ofsPublicKey = 1;
+}
+
+message QueryGetEndorsementsResponse {
+	Endorsements endorsements = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllEndorsementsRequest {
+	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllEndorsementsResponse {
+	repeated Endorsements endorsements = 1 [(gogoproto.nullable) = false];
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// this line is used by starport scaffolding # 3

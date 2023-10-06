@@ -1,0 +1,16 @@
+syntax = "proto3";
+package dflow.noncedbank;
+
+import "gogoproto/gogo.proto";
+import "noncedbank/params.proto";
+import "noncedbank/nonced_bridge_state.proto";
+// this line is used by starport scaffolding # genesis/proto/import
+
+option go_package = "dflow/x/noncedbank/types";
+
+// GenesisState defines the noncedbank module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+  NoncedBridgeState noncedBridgeState = 2;
+  // this line is used by starport scaffolding # genesis/proto/state
+}

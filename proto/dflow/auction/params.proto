@@ -1,0 +1,21 @@
+syntax = "proto3";
+package dflow.auction;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "dflow/x/auction/types";
+
+// Params defines the parameters for the module.
+message Params {
+  option (gogoproto.goproto_stringer) = false;
+  uint64 auctionCost = 1;
+  // The minimum allowed max delivery period in milliseconds
+  int64 minDeliveryPeriod = 2;
+  // The maximum allowed endorsement expiration time in seconds relative to when deliver notional is called.
+  // Endorsements should not be issued with longer expiration times than this.
+  int64 endorsementMaxRelativeExpiration = 3;
+  // A grace period in seconds added to the maximum allowed expiration time when checking the
+  // maximum expiration time of an endorsement. This can be used to ensure that endorsements are not
+  // wrongly rejected due to lag in block timestamps.
+  int64 endorsementMaxRelativeExpirationGrace = 4;
+}

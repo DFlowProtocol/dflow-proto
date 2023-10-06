@@ -1,0 +1,98 @@
+syntax = "proto3";
+package dflow.auction;
+
+option go_package = "dflow/x/auction/types";
+
+message BlindBid {
+  string hash = 1;
+  string marketMakerPublicKey = 2;
+  uint64 revealedValue = 3;
+  bool isRevealed = 4;
+}
+
+message BidInfo {
+  string marketMakerPublicKey = 1;
+  string marketMakerUrl = 2;
+  uint64 bid = 3;
+}
+
+message OrderFlowAuction {
+  string ofsPublicKey = 1;
+  uint64 auctionId = 2;
+  string clientAuctionId = 3;
+  string baseCurrency = 4;
+  string quoteCurrency = 5;
+  uint64 minimumOrderSize = 6;
+  uint64 maximumOrderSize = 7;
+  uint64 notionalSize = 8;
+  int64 maxDeliveryPeriod = 9;
+  // Total notional value of order flow delivered during the current epoch. Includes notional delivered for payment in lieu.
+  uint64 deliveredNotionalSize = 10;
+  // Total notional value of order flow delivered over the lifetime of the auction. Includes notional delivered for payment in lieu.
+  uint64 lifetimeDeliveredNotionalSize = 11;
+  // Total notional value of deliveries for payment in lieu during the current epoch
+  uint64 paymentInLieuDeliveredNotionalSize = 12;
+  // Total notional value of deliveries for payment in lieu over the lifetime of the auction
+  uint64 paymentInLieuLifetimeDeliveredNotionalSize = 13;
+  uint32 feePayerMode = 14;
+  // A boolean indicating whether the payment in lieu is enabled for the auction
+  bool isPaymentInLieuEnabled = 15;
+  // A boolean indicating whether the auction is unidirectional
+  bool isUnidirectional = 16;
+  string extensions = 17;
+  string network = 18;
+  uint64 epoch = 19;
+  // The Unix timestamp at and after which blind bids for the current epoch will be rejected, given in milliseconds since January 1, 1970 UTC
+  int64 blindBidEndTimestamp = 20;
+  // The notional time at and after which blind bids for the current epoch will be rejected
+  uint64 blindBidEndNotionalTime = 21;
+  BidInfo leader = 22;
+  BidInfo winner = 23;
+  repeated BlindBid blindBids = 24;
+}
+
+message AuctionGridDataRow {
+  string ofsPublicKey = 1;
+  uint64 auctionId = 2;
+  string clientAuctionId = 3;
+  string baseCurrency = 4;
+  string quoteCurrency = 5;
+  uint64 minimumOrderSize = 6;
+  uint64 maximumOrderSize = 7;
+  uint64 notionalSize = 8;
+  int64 maxDeliveryPeriod = 9;
+  uint64 deliveredNotionalSize = 10;
+  uint64 lifetimeDeliveredNotionalSize = 11;
+  uint64 paymentInLieuDeliveredNotionalSize = 12;
+  uint64 paymentInLieuLifetimeDeliveredNotionalSize = 13;
+  uint32 feePayerMode = 14;
+  bool isPaymentInLieuEnabled = 15;
+  bool isUnidirectional = 16;
+  string extensions = 17;
+  string network = 18;
+  uint64 epoch = 19;
+  int64 epochCutoffTimestamp = 20;
+  // The Unix timestamp at and after which blind bids for the current epoch will be rejected, given in milliseconds since January 1, 1970 UTC
+  int64 blindBidEndTimestamp = 21;
+  // The notional time at and after which blind bids for the current epoch will be rejected
+  uint64 blindBidEndNotionalTime = 22;
+  BidInfo leader = 23;
+  BidInfo winner = 24;
+  repeated BlindBid blindBids = 25;
+
+  message OFSPayment {
+    // Amount already paid to the OFS during the current epoch
+    uint64 paid = 1;
+    // Total amount that the OFS deserves based on current delivered notional. This may be different
+    // than `currentPaymentToOfs` in the event of underflow.
+    uint64 realized = 2;
+    // Winning bid less realized
+    uint64 unrealized = 3;
+  }
+  OFSPayment payment = 26;
+
+  message Overlap {
+    bool hasOverlap = 1;
+  }
+  Overlap overlap = 27;
+}

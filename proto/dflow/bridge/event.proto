@@ -1,0 +1,27 @@
+syntax = "proto3";
+package dflow.bridge;
+
+// this line is used by starport scaffolding # proto/tx/import
+
+option go_package = "dflow/x/bridge/types";
+
+message InitWithdrawCeremony {
+    string type = 1;
+    // The bech32 DFlow public key of the withdrawer
+    string src = 2;
+    // Base58 encoded destination public key on Solana
+    string dst = 3;
+    // Amount to withdraw
+    uint64 amt = 4;
+    // The generated withdraw ID for this withdrawal
+    uint64 wid = 5;
+}
+
+message SignatureInfo {
+  // The bech32 encoded DFlow public key of the signatory server
+  string ssPublicKey = 1;
+  // The base58 encoded Solana public key of the signatory server
+  string ed25519PublicKey = 2;
+  // A base58 encoded signature from the Solana private key of the signatory server
+  string signature = 3;
+}

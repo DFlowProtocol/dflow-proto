@@ -1,0 +1,20 @@
+syntax = "proto3";
+package dflow.bridge;
+
+import "bridge/event.proto";
+
+option go_package = "dflow/x/bridge/types";
+
+message WithdrawTxMap {
+  uint64 withdrawId = 1;
+  // Base64-encoded withdrawal message
+  string message = 2;
+  repeated SignatureInfo signatures = 3;
+  string src = 4;
+  // The Base58-encoded SPL token account receiving the funds
+  string dst = 5;
+  // The Base58-encoded Solana wallet that owns the dst account
+  string dstOwner = 6;
+  uint64 amt = 7;
+}
+

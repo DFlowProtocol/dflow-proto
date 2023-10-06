@@ -1,0 +1,146 @@
+syntax = "proto3";
+package dflow.bridge;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "bridge/params.proto";
+import "bridge/nonced_proposed_transfers.proto";
+import "bridge/withdraw_tx_map.proto";
+import "bridge/pending_withdrawal.proto";
+// this line is used by starport scaffolding # 1
+
+option go_package = "dflow/x/bridge/types";
+
+// Query defines the gRPC querier service.
+service Query {
+	// Parameters queries the parameters of the module.
+	rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+		option (google.api.http).get = "/dflow/bridge/params";
+	}
+
+    // Queries a NoncedProposedTransfers by index.
+	rpc NoncedProposedTransfers(QueryGetNoncedProposedTransfersRequest) returns (QueryGetNoncedProposedTransfersResponse) {
+		option (google.api.http).get = "/dflow/bridge/nonced_proposed_transfers/{nonce}";
+	}
+
+	// Queries a list of NoncedProposedTransfers items.
+	rpc NoncedProposedTransfersAll(QueryAllNoncedProposedTransfersRequest) returns (QueryAllNoncedProposedTransfersResponse) {
+		option (google.api.http).get = "/dflow/bridge/nonced_proposed_transfers";
+	}
+
+	// Queries a WithdrawTxMap by index.
+	rpc WithdrawTxMap(QueryGetWithdrawTxMapRequest) returns (QueryGetWithdrawTxMapResponse) {
+		option (google.api.http).get = "/dflow/bridge/withdraw_tx_map/{withdrawId}";
+	}
+
+	// Queries a list of WithdrawTxMap items.
+	rpc WithdrawTxMapAll(QueryAllWithdrawTxMapRequest) returns (QueryAllWithdrawTxMapResponse) {
+		option (google.api.http).get = "/dflow/bridge/withdraw_tx_map";
+	}
+
+	// Queries a list of WithdrawTxMap items for the specified src account.
+	rpc WithdrawTxMapsByAccount(QueryWithdrawTxMapsByAccountRequest) returns (QueryWithdrawTxMapsByAccountResponse) {
+		option (google.api.http).get = "/dflow/bridge/withdraw_tx_maps_by_account/{src}";
+	}
+
+	// Queries a list of WithdrawTxMap items for withdrawals that are pending, optionally for the specified src account.
+	rpc PendingWithdrawals(QueryPendingWithdrawalsRequest) returns (QueryPendingWithdrawalsResponse) {
+		option (google.api.http).get = "/dflow/bridge/pending_withdrawals/{src}";
+	}
+
+	// Queries a PendingWithdrawal by index.
+	rpc PendingWithdrawal(QueryGetPendingWithdrawalRequest) returns (QueryGetPendingWithdrawalResponse) {
+		option (google.api.http).get = "/dflow/bridge/pending_withdrawal/{withdrawId}";
+	}
+
+	// Queries a list of PendingWithdrawal items.
+	rpc PendingWithdrawalAll(QueryAllPendingWithdrawalRequest) returns (QueryAllPendingWithdrawalResponse) {
+		option (google.api.http).get = "/dflow/bridge/pending_withdrawal";
+	}
+
+// this line is used by starport scaffolding # 2
+}
+
+// QueryParamsRequest is request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params holds all the parameters of this module.
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryGetNoncedProposedTransfersRequest {
+	  uint64 nonce = 1;
+
+}
+
+message QueryGetNoncedProposedTransfersResponse {
+	NoncedProposedTransfers noncedProposedTransfers = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllNoncedProposedTransfersRequest {
+	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllNoncedProposedTransfersResponse {
+	repeated NoncedProposedTransfers noncedProposedTransfers = 1 [(gogoproto.nullable) = false];
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryGetWithdrawTxMapRequest {
+	  uint64 withdrawId = 1;
+
+}
+
+message QueryGetWithdrawTxMapResponse {
+	WithdrawTxMap withdrawTxMap = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllWithdrawTxMapRequest {
+	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllWithdrawTxMapResponse {
+	repeated WithdrawTxMap withdrawTxMap = 1 [(gogoproto.nullable) = false];
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryWithdrawTxMapsByAccountRequest {
+	// The bech32 public key associated with the withdrawer of funds
+	string src = 1;
+}
+
+message QueryWithdrawTxMapsByAccountResponse {
+	repeated WithdrawTxMap withdrawTxMaps = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryPendingWithdrawalsRequest {
+	// The bech32 public key associated with the withdrawer of funds or "" to request all pending
+	// withdrawals
+	string src = 1;
+}
+
+message QueryPendingWithdrawalsResponse {
+	repeated WithdrawTxMap withdrawTxMaps = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryGetPendingWithdrawalRequest {
+	uint64 withdrawId = 1;
+}
+
+message QueryGetPendingWithdrawalResponse {
+	PendingWithdrawal pendingWithdrawal = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllPendingWithdrawalRequest {
+	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllPendingWithdrawalResponse {
+	repeated PendingWithdrawal pendingWithdrawal = 1 [(gogoproto.nullable) = false];
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// this line is used by starport scaffolding # 3

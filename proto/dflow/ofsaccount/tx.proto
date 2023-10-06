@@ -1,0 +1,50 @@
+syntax = "proto3";
+package dflow.ofsaccount;
+
+import "ofsaccount/order_flow_source.proto";
+
+// this line is used by starport scaffolding # proto/tx/import
+
+option go_package = "dflow/x/ofsaccount/types";
+
+// Msg defines the Msg service.
+service Msg {
+  rpc InitAccount(MsgInitAccount) returns (MsgInitAccountResponse);
+  rpc UpdateEndorsementKeys(MsgUpdateEndorsementKeys) returns (MsgUpdateEndorsementKeysResponse);
+  rpc SetExtensions(MsgSetExtensions) returns (MsgSetExtensionsResponse);
+// this line is used by starport scaffolding # proto/tx/rpc
+}
+
+message MsgInitAccount {
+  // The bech32 DFlow public key of the order flow source
+  string ofsPublicKey = 1;
+  // The base58 encoded Ed25519 public key used by the order flow source to endorse flow
+  string flowEndorsementKey = 2;
+  string extensions = 3;
+}
+
+message MsgInitAccountResponse {
+}
+
+message MsgUpdateEndorsementKeys {
+  // The bech32 DFlow public key of the order flow source
+  string ofsPublicKey = 1;
+  // Base58-encoded Ed25519 endorsement key
+  string flowEndorsementKey1 = 2;
+  // Base58-encoded Ed25519 endorsement key
+  string flowEndorsementKey2 = 3;
+}
+
+message MsgUpdateEndorsementKeysResponse {
+}
+
+message MsgSetExtensions {
+  // The bech32 DFlow public key of the order flow source
+  string ofsPublicKey = 1;
+  string extensions = 2;
+}
+
+message MsgSetExtensionsResponse {
+}
+
+// this line is used by starport scaffolding # proto/tx/message
